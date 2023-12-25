@@ -1,0 +1,10 @@
+### Default ignore template
+.idea
+.vscode
+*.iml
+out
+gen
+dist
+build
+node_modules
+vendor
