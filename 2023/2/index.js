@@ -1,8 +1,14 @@
-const fs            = require( 'fs' );
-const path          = require( 'path' );
-const file_path     = path.resolve( __dirname, './input.txt' );
-const game_id_regex = /(?!Game\S)\d(?=:)/;
-const regex         = /(\d+ \w+)/g;
+const fs                      = require( 'fs' );
+const path                    = require( 'path' );
+const file_path               = path.resolve( __dirname, './input.txt' );
+const game_id_regex           = /(?!Game\S)\d(?=:)/;
+const regex                   = /(\d+ \w+)/g;
+const sets                    = {
+	red  : 12,
+	green: 13,
+	blue : 14,
+};
+const available_games_to_play = [];
 
 function part_one() {
 	fs.readFile( file_path, 'utf8', ( err, data ) => {
@@ -20,7 +26,8 @@ function part_one() {
 			// Extract colors
 			const colors     = lines[ i ].match( regex );
 			const colors_obj = {};
-
+			console.log(colors);
+			break;
 			// Loop through each color and sum them up
 			for ( const color of colors ) {
 				const [ num, color_name ] = color.split( ' ' );
@@ -39,12 +46,23 @@ function part_one() {
 				colors: colors_obj,
 			};
 
+			if ( check_if_game_playable( colors_obj, sets ) ) {
+				available_games_to_play.push( game_obj.id );
+			}
+
 			games.push( game_obj );
 		}
 
-
-		console.log( games );
+		console.log( 'Games:\n', games );
+		console.log( 'Playable games:\n', available_games_to_play );
+		console.log( 'Playable games id sum:\n', available_games_to_play.reduce( ( acc, cur ) => acc + cur, 0 ) );
 	} );
+}
+
+function check_if_game_playable( game_colors, found_colors ) {
+	return !( game_colors.red > found_colors.red ||
+		game_colors.green > found_colors.green ||
+		game_colors.blue > found_colors.blue );
 }
 
 function part_two() {
